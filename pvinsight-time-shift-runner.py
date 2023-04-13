@@ -33,13 +33,13 @@ if __name__ == '__main__':
     module_to_import = 'pvanalytics-cpd-module'
     # Generate list for us to store all of our results for the module
     results_list = list()
-    # Load in data set that we're going to analyze. 
+    # Load in data set that we're going to analyze.
     # System metadata: This CSV represents the system_metadata table, which is
     # a master table for associated system metadata (system_id, name, azimuth,
-    # tilt, etc.) 
+    # tilt, etc.)
     system_metadata = pd.read_csv("./data/system_metadata.csv")
     # File metadata: This file represents the file_metadata table, which is
-    # the master table for files associated with different tests (az-tilt, 
+    # the master table for files associated with different tests (az-tilt,
     # time shifts, degradation, etc.). Contains file name, associated file
     # information (sampling frequency, specific test, timezone, etc) as well
     # as ground truth information to test against in the validation_dictionary
@@ -68,15 +68,15 @@ if __name__ == '__main__':
         validation_tests['category_name'] == 'time_shifts'].iloc[0])
     # Get the associated metrics we're supposed to calculate
     performance_metrics = ast.literal_eval(time_shift_test_information[
-            'performance_metrics'])
+        'performance_metrics'])
     # Get all of the linked files for time shift analysis via a series
     # of dataframe joins
     associated_file_ids = list(file_category_link[
-        file_category_link['category_id'] == 
+        file_category_link['category_id'] ==
         time_shift_test_information['category_id']]['file_id'])
     associated_files = file_metadata[file_metadata['file_id'].isin(
         associated_file_ids)]
-    # Loop through each file and generate predictions 
+    # Loop through each file and generate predictions
     for index, row in associated_files.iterrows():
         # Get file_name, which will be pulled from database or S3 for
         # each analysis
@@ -97,16 +97,17 @@ if __name__ == '__main__':
         # test, let's read in the file as a pandas dataframe (this data
         # would most likely be stored in an S3 bucket)
         time_series = pd.read_csv(os.path.join("./data/file_data/", file_name),
-                                index_col = 0,
-                                parse_dates = True).squeeze()
-        time_series = time_series.asfreq(str(row['data_sampling_frequency']) + "T")
+                                  index_col=0,
+                                  parse_dates=True).squeeze()
+        time_series = time_series.asfreq(
+            str(row['data_sampling_frequency']) + "T")
         # Read in the associated validation time series (this would act as a
         # fixture or similar, and validation data would be stored in an
         # associated folder on S3 or similar)
         ground_truth_series = pd.read_csv(
             os.path.join("./data/validation_data/", file_name),
-            index_col = 0,
-            parse_dates = True).squeeze()
+            index_col=0,
+            parse_dates=True).squeeze()
         # Import designated module via importlib
         module = import_module(module_to_import)
         function = getattr(module, function_name)
@@ -123,7 +124,7 @@ if __name__ == '__main__':
             function_run_time = (end_time - start_time)
         else:
             time_shift_series = function(time_series, **kwargs)
-        # Run routine for all of the performance metrics and append 
+        # Run routine for all of the performance metrics and append
         # results to the dictionary
         results_dictionary = dict()
         results_dictionary['file_name'] = file_name
@@ -134,31 +135,35 @@ if __name__ == '__main__':
                 mae = mean_absolute_error(ground_truth_series,
                                           time_shift_series)
                 results_dictionary[metric] = mae
+            if metric == 'data_requirements':
+                results_dictionary[metric] = function_parameters
         results_list.append(results_dictionary)
     # Convert the results to a pandas dataframe and perform all of the
     # post-processing in the script
-    results_df = pd.DataFrame(results_list)        
+    results_df = pd.DataFrame(results_list)
     # Build out the final processed results:
     #   1) Public reporting: mean MAE, mean run time, etc.
     #   2) Private reporting: graphics and tables split by different factors
     # First get mean value for all the performance metrics and save (this will
     # be saved to a public metrics dictionary)
     public_metrics_dict = dict()
+
     for metric in performance_metrics:
-        mean_value = results_df[metric].mean()
-        public_metrics_dict['mean_' + metric] = mean_value
+        if metric == 'mean_absolute_error':
+            mean_value = results_df[metric].mean()
+            public_metrics_dict['mean_' + metric] = mean_value
     # Write public metric information to a JSON
     with open('./results/time-shift-public-metrics.json', 'w') as fp:
         json.dump(public_metrics_dict, fp)
     # Now generate private results. These will be more specific to the
     # type of analysis being run as results will be color-coded by certain
-    # parameters. These params will be available as columns in the 
+    # parameters. These params will be available as columns in the
     # 'associated_files' dataframe
     color_code_params = ['data_sampling_frequency', 'issue']
-    results_df_private = pd.merge(results_df, 
+    results_df_private = pd.merge(results_df,
                                   associated_files[['file_name'] +
                                                    color_code_params],
-                                  on = 'file_name')
+                                  on='file_name')
     for param in color_code_params:
         # Mean absolute error histogram
         sns.displot(results_df_private,
