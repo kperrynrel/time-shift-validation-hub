@@ -180,6 +180,12 @@ if __name__ == '__main__':
                                  str(param) + '_mean_absolute_error.png'))
         plt.close()
         plt.clf()
+        # Generate stratified table for private reports
+        stratified_mae_table = pd.DataFrame(results_df_private.groupby(param)[
+            'mean_absolute_error'].mean())
+        stratified_mae_table.to_csv(
+            os.path.join("./results",
+                         str(param) + '_mean_absolute_error_results.csv'))
         # Run time histogram
         sns.displot(results_df_private,
                     x='run_time', hue=param,
@@ -190,3 +196,9 @@ if __name__ == '__main__':
                                  str(param) + '_run_time.png'))
         plt.close()
         plt.clf()
+        # Generate stratified table for private reports
+        stratified_mae_table = pd.DataFrame(results_df_private.groupby(param)[
+            'run_time'].mean())
+        stratified_mae_table.to_csv(
+            os.path.join("./results",
+                         str(param) + '_run_time_results.csv'))
