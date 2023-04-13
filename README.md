@@ -38,3 +38,9 @@ the folder contains the following:
 		azimuth-tilt estimation. Each validation tests has its own unique row.
 	- file_test_link.csv: This file links unique file IDs to a particular validation_test ID (links files
 		to the validation test that we want to run)
+
+/results/ folder: This folder contains files related to public and private reporting. Specifically, the data
+in time-shift-public-metrics.json would feed into a final 'public results' table with general information
+on the module run (average run speed, average MAE, requirements for running function, etc). The associated .png
+files in this folder would be used in private reporting and sent directly to the developer who submitted the
+module.
