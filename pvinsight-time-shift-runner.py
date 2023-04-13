@@ -76,6 +76,14 @@ if __name__ == '__main__':
         time_shift_test_information['category_id']]['file_id'])
     associated_files = file_metadata[file_metadata['file_id'].isin(
         associated_file_ids)]
+    # Get the information associated with the module to run the tests
+    # Get the name of the function we want to import associated with this
+    # test
+    function_name = time_shift_test_information['function_name']
+    # Import designated module via importlib
+    module = import_module(module_to_import)
+    function = getattr(module, function_name)
+    function_parameters = list(inspect.signature(function).parameters)
     # Loop through each file and generate predictions
     for index, row in associated_files.iterrows():
         # Get file_name, which will be pulled from database or S3 for
@@ -90,9 +98,6 @@ if __name__ == '__main__':
             system_metadata['system_id'] == system_id].iloc[0])
         # Create master dictionary of all possible function kwargs
         kwargs_dict = dict(ChainMap(dict(row), associated_metadata))
-        # Get the name of the function we want to import associated with this
-        # test
-        function_name = time_shift_test_information['function_name']
         # Now that we've collected all of the information associated with the
         # test, let's read in the file as a pandas dataframe (this data
         # would most likely be stored in an S3 bucket)
@@ -108,10 +113,6 @@ if __name__ == '__main__':
             os.path.join("./data/validation_data/", file_name),
             index_col=0,
             parse_dates=True).squeeze()
-        # Import designated module via importlib
-        module = import_module(module_to_import)
-        function = getattr(module, function_name)
-        function_parameters = list(inspect.signature(function).parameters)
         # Filter the kwargs dictionary based on required function params
         kwargs = dict((k, kwargs_dict[k]) for k in function_parameters
                       if k in kwargs_dict)
@@ -147,11 +148,12 @@ if __name__ == '__main__':
     # First get mean value for all the performance metrics and save (this will
     # be saved to a public metrics dictionary)
     public_metrics_dict = dict()
-
     for metric in performance_metrics:
-        if metric == 'mean_absolute_error':
+        if metric != 'data_requirements':
             mean_value = results_df[metric].mean()
             public_metrics_dict['mean_' + metric] = mean_value
+        else:
+            public_metrics_dict[metric] = function_parameters
     # Write public metric information to a JSON
     with open('./results/time-shift-public-metrics.json', 'w') as fp:
         json.dump(public_metrics_dict, fp)
