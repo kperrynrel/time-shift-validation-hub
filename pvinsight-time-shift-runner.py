@@ -148,13 +148,15 @@ if __name__ == '__main__':
     # First get mean value for all the performance metrics and save (this will
     # be saved to a public metrics dictionary)
     public_metrics_dict = dict()
+    public_metrics_dict['module'] = module_to_import
     for metric in performance_metrics:
         if metric != 'data_requirements':
             mean_value = results_df[metric].mean()
             public_metrics_dict['mean_' + metric] = mean_value
         else:
             public_metrics_dict[metric] = function_parameters
-    # Write public metric information to a JSON
+    # TODO: Write public metric information to a public results table. here we
+    # just write a json to illustrate that final outputs.
     with open('./results/time-shift-public-metrics.json', 'w') as fp:
         json.dump(public_metrics_dict, fp)
     # Now generate private results. These will be more specific to the
