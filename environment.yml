@@ -1,0 +1,7 @@
+name: time-shift-validation-hub
+dependencies:
+    - python=3.7.10
+    - anaconda
+    - pip
+    - pip:
+      - -r file:requirements.txt

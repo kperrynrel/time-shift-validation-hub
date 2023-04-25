@@ -23,10 +23,10 @@ from importlib import import_module
 import inspect
 import time
 from collections import ChainMap
-from sklearn.metrics import mean_absolute_error
 import seaborn as sns
 import matplotlib.pyplot as plt
 import json
+import numpy as np
 
 if __name__ == '__main__':
     # Load in the module that we're going to test on.
@@ -133,8 +133,7 @@ if __name__ == '__main__':
             if metric == 'run_time':
                 results_dictionary[metric] = function_run_time
             if metric == 'mean_absolute_error':
-                mae = mean_absolute_error(ground_truth_series,
-                                          time_shift_series)
+                mae = np.mean(np.abs(ground_truth_series - time_shift_series))
                 results_dictionary[metric] = mae
             if metric == 'data_requirements':
                 results_dictionary[metric] = function_parameters
