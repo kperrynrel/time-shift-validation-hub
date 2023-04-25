@@ -1,7 +1,17 @@
-name: time-shift-validation-hub
+name: time-shift-validation
+channels:
+    - defaults
+    - anaconda
+    - conda-forge
 dependencies:
     - python=3.7.10
-    - anaconda
     - pip
+    - pvlib=0.9.4
+    - numpy=1.21.6
+    - seaborn=0.11.1
+    - matplotlib=3.3.4
+    - ruptures=1.1.4
+    - pandas=1.3.5
     - pip:
-      - -r file:requirements.txt
+        - solar_data_tools==0.5.4
+        - pvanalytics==0.1.3
