@@ -33,7 +33,8 @@ def get_sunrise_sunset_timestamps(time_series, daytime_mask):
         the time series.
     """
     day_night_changes = daytime_mask.groupby(
-        daytime_mask.index.date).apply(lambda x: x.ne(x.shift().ffill()))
+        daytime_mask.index.date, group_keys=False).apply(
+            lambda x: x.ne(x.shift().ffill()))
     #Get the first 'day' mask for each day in the series; proxy for sunrise
     sunrise_series = pd.Series(daytime_mask[(daytime_mask) &
                                             (day_night_changes)].index)
