@@ -4,12 +4,13 @@ and tested using the data sets accordingly.
 """
 
 import pandas as pd
-from pvanalytics.features import daytime
+import daytime
 from pvanalytics.quality.outliers import zscore
 from pvanalytics.quality import gaps
 import pvlib
 import ruptures as rpt
 import numpy as np
+import matplotlib.pyplot as plt
 
 def get_sunrise_sunset_timestamps(time_series, daytime_mask):
     """
@@ -158,6 +159,9 @@ def detect_time_shifts(time_series,
         time_shift_series = time_shift_estimation(midday_diff_series)
         time_shift_series = time_shift_series.reindex(date_index)\
             .ffill().bfill()
+        midday_diff_series.plot()
+        plt.show()
+        plt.close()
         return time_shift_series
     else:
         return pd.Series(0, index=date_index)
