@@ -268,7 +268,6 @@ def run(module_to_import_s3_path,
     function = getattr(module, function_name)
     function_parameters = list(inspect.signature(function).parameters)
     # Loop through each file and generate predictions
-    file_metadata = file_metadata[file_metadata['file_id']>=150]
     for index, row in file_metadata.iterrows():
         # Get file_name, which will be pulled from database or S3 for
         # each analysis
