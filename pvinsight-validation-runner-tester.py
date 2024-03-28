@@ -36,21 +36,6 @@ import zipfile
 import subprocess
 import logging
 
-# Check Pytorch installation
-import torch, torchvision
-print("torch version:",torch.__version__, "cuda:",torch.cuda.is_available())
-
-# Check MMDetection installation
-import mmdet
-print("mmdetection:",mmdet.__version__)
-
-# Check mmcv installation
-import mmcv
-print("mmcv:",mmcv.__version__)
-
-# Check mmengine installation
-import mmengine
-print("mmengine:",mmengine.__version__)
 
 # Basic logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
