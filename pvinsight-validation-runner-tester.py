@@ -194,7 +194,7 @@ def run(module_to_import_s3_path,
     # except subprocess.CalledProcessError as e:
     #     print("error installing submission dependencies:", e)
     # shutil.move(os.path.join(target_module_path, file_name), os.path.join(new_dir, file_name))
-    module_name = "sdt-module"
+    module_name = "pvanalytics-cpd-module"
     data_dir = "C:/Users/kperry/Documents/source/repos/time-shift-validation-hub/data/"
     # Generate list for us to store all of our results for the module
     results_list = list()
@@ -286,10 +286,8 @@ def run(module_to_import_s3_path,
         time_series = pd.read_csv(os.path.join(data_dir + "/file_data/", file_name),
                                 index_col=0,
                                 parse_dates=True).squeeze()
-        time_series =time_series.dropna()
         time_series = time_series.asfreq(
             str(row['data_sampling_frequency']) + "T")
-        time_series.to_csv(os.path.join(data_dir + "/file_data/", file_name))
         # Filter the kwargs dictionary based on required function params
         kwargs = dict((k, kwargs_dict[k]) for k in function_parameters
                       if k in kwargs_dict)
