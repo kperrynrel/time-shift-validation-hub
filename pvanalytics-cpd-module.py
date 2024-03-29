@@ -4,16 +4,14 @@ and tested using the data sets accordingly.
 """
 
 import pandas as pd
-import daytime
 from pvanalytics.quality.time import shifts_ruptures
 from pvanalytics.features import daytime
 from pvanalytics.quality.outliers import zscore
 from pvanalytics.quality import gaps
 import pvlib
-import ruptures as rpt
-import numpy as np
 import matplotlib.pyplot as plt
 import pvanalytics
+import ruptures
     
 def detect_time_shifts(time_series,
                        latitude, longitude,
