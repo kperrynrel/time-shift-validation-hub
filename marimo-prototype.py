@@ -52,8 +52,8 @@ def __(plotting):
 @app.cell
 def __(plotting, mo):
     if plotting is not None:
-        median_mae = round(plotting.results_df.mean_absolute_error_time_series.median(), 2)
-        mean_mae = round(plotting.results_df.mean_absolute_error_time_series.mean(), 2)
+        median_mae = round(plotting.results_df["Time Series-Level MAE"].median(), 2)
+        mean_mae = round(plotting.results_df["Time Series-Level MAE"].mean(), 2)
         _fig = mo.md(f"""
                      Next, we visualize the mean absolute error distribution, color-coded by issues present in the time series.
                      
@@ -155,6 +155,9 @@ def __(mo,
         def __init__(self, results_df):
             '''Create plotting class.'''
             self.results_df = results_df
+            self.results_df = self.results_df.rename(columns={"issue": "Data Issue Type",
+                                                              "mean_absolute_error_time_series": "Time Series-Level MAE",
+                                                              "data_sampling_frequency": 'Data Sampling Frequency (minutes)'})
 
 
         def plot_run_times(self):
@@ -163,8 +166,6 @@ def __(mo,
             return fig
 
         def plot_mae_by_issue(self):
-            self.results_df = self.results_df.rename(columns={"issue": "Data Issue Type",
-                                                              "mean_absolute_error_time_series": "Time Series-Level MAE"})
             fig = sns.histplot(self.results_df,
                                x="Time Series-Level MAE",
                                hue="Data Issue Type",
@@ -173,9 +174,6 @@ def __(mo,
             return fig
 
         def plot_mae_by_sampling_frequency(self):
-            self.results_df = self.results_df.rename(
-                columns={"data_sampling_frequency": 'Data Sampling Frequency (minutes)',
-                         "mean_absolute_error_time_series": "Time Series-Level MAE"})
             fig = sns.histplot(self.results_df,
                                x="Time Series-Level MAE",
                                hue='Data Sampling Frequency (minutes)',
@@ -184,18 +182,12 @@ def __(mo,
             return fig
         
         def dataframe_mae_by_issue_type(self):
-            self.results_df = self.results_df.rename(columns=
-                                        {"mean_absolute_error_time_series": "Time Series-Level MAE",
-                                         "issue": "Issue Type"})
             df = self.results_df.groupby(
-                "Issue Type")["Time Series-Level MAE"].mean()
+                "Data Issue Type")["Time Series-Level MAE"].mean()
             df = pd.DataFrame(df.reset_index())
             return df
         
         def dataframe_mae_by_sampling(self):
-            self.results_df = self.results_df.rename(columns=
-                                        {"mean_absolute_error_time_series": "Time Series-Level MAE",
-                                         "data_sampling_frequency": 'Data Sampling Frequency (minutes)'})
             df = self.results_df.groupby(
                     'Data Sampling Frequency (minutes)')["Time Series-Level MAE"].mean()
             df = pd.DataFrame(df.reset_index())
