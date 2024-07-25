@@ -11,7 +11,7 @@
     "mean_absolute_error"
   ],
   "metrics_operations": {
-    "absolute_error": [
+    "mean_absolute_error": [
       "mean",
       "median"
     ],
