@@ -1,10 +1,10 @@
 {
-  "category_name": "time_shifts",
+  "category_name": "Time Shift Detection",
   "function_name": "detect_time_shifts",
   "comparison_type": "time_series",
   "display_metrics": {
-    "mean_absolute_error": "Mean Absolute Error",
-    "median_absolute_error": "Median Absolute Error"
+    "mean_mean_absolute_error": "Mean Mean Absolute Error",
+    "median_mean_absolute_error": "Median Mean Absolute Error"
   },
   "performance_metrics": [
     "runtime",
