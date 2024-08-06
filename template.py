@@ -20,41 +20,41 @@ def __(create_df_from_cli_args, generatePlots):
 @app.cell
 def __(mo, plotting):
     if plotting is not None:
-        median_run_time = round(plotting.results_df.run_time.median(), 2)
-        mean_run_time = round(plotting.results_df.run_time.mean(), 2)
-        max_run_time = round(plotting.results_df.run_time.max(), 2)
-        min_run_time = round(plotting.results_df.run_time.min(), 2)
+        median_runtime = round(plotting.results_df.runtime.median(), 2)
+        mean_runtime = round(plotting.results_df.runtime.mean(), 2)
+        max_runtime = round(plotting.results_df.runtime.max(), 2)
+        min_runtime = round(plotting.results_df.runtime.min(), 2)
         _fig = mo.md(
             f"""
                      First, we visualize the distribution of run times. 
 
                      Median run time: """
-            + str(median_run_time)
+            + str(median_runtime)
             + """ seconds
 
                      Mean run time: """
-            + str(mean_run_time)
+            + str(mean_runtime)
             + """ seconds
 
                      Max run time: """
-            + str(max_run_time)
+            + str(max_runtime)
             + """ seconds
 
                      Min run time: """
-            + str(min_run_time)
+            + str(min_runtime)
             + """ seconds
                      """
         )
     else:
         _fig = None
     _fig
-    return max_run_time, mean_run_time, median_run_time, min_run_time
+    return max_runtime, mean_runtime, median_runtime, min_runtime
 
 
 @app.cell
 def __(plotting):
     if plotting is not None:
-        _fig = plotting.plot_run_times()
+        _fig = plotting.plot_runtimes()
     else:
         _fig = None
     _fig
@@ -64,12 +64,8 @@ def __(plotting):
 @app.cell
 def __(mo, plotting):
     if plotting is not None:
-        median_mae = round(
-            plotting.results_df["Time Series-Level MAE"].median(), 2
-        )
-        mean_mae = round(
-            plotting.results_df["Time Series-Level MAE"].mean(), 2
-        )
+        median_mae = round(plotting.results_df["Time Series-Level MAE"].median(), 2)
+        mean_mae = round(plotting.results_df["Time Series-Level MAE"].mean(), 2)
         _fig = mo.md(
             f"""
                      Next, we visualize the mean absolute error distribution, color-coded by issues present in the time series.
@@ -186,8 +182,8 @@ def __(pd, sns):
                 }
             )
 
-        def plot_run_times(self):
-            fig = sns.histplot(self.results_df, x="run_time", bins=40)
+        def plot_runtimes(self):
+            fig = sns.histplot(self.results_df, x="runtime", bins=40)
             fig.set(xlabel="Run Time (seconds)", ylabel="Number Instances")
             return fig
 

@@ -31,7 +31,7 @@
   "private_results_columns": [
     "system_id",
     "file_name",
-    "run_time",
+    "runtime",
     "data_requirements",
     "mean_absolute_error_time_series",
     "data_sampling_frequency",
