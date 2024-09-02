@@ -3,15 +3,15 @@
   "function_name": "detect_time_shifts",
   "comparison_type": "time_series",
   "display_metrics": {
-    "mean_mean_absolute_error": "Mean Mean Absolute Error",
-    "median_mean_absolute_error": "Median Mean Absolute Error"
+    "mean_mean_absolute_error_time_series": "Mean Mean Absolute Error",
+    "median_mean_absolute_error_time_series": "Median Mean Absolute Error"
   },
   "performance_metrics": [
     "runtime",
     "mean_absolute_error"
   ],
   "metrics_operations": {
-    "mean_absolute_error": [
+    "mean_absolute_error_time_series": [
       "mean",
       "median"
     ],
